@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from node import Node
+from element import E1LIN
 import re
 
 def InputParser(input_file):
@@ -10,7 +11,10 @@ def InputParser(input_file):
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     with open(os.path.join(__location__,input_file),"r") as file:
-        
+
+        print("Input file: {0} => loaded\n".format(input_file))
+        print("Reading data from input file...\n")
+
         # Initialize Finite Element Data Lists
         elements = []
         nodes = []
@@ -33,16 +37,26 @@ def InputParser(input_file):
             elif "*ELEMENT" in line: # Element definition line
                 state = 2
                 continue
-        
 
+            elif "*BOUNDARY_CONDITION" in line:
+                 state = 3
+            
+            elif "*LOAD" in line:
+                 state = 4
+                 
             # Data extraction section
 
             elif state == 1: # Parse node
-                NodeParser(line)
+                nodes.append(NodeParser(line))
 
             elif state == 2: # Parse element
-                ElementParser(line)
+                elements.append(ElementParser(line))
+            else:
+                raise Warning("Unknown definit: {0}".format(line))
 
+    print("Done reading => {0}!\n".format(input_file))
+
+    # Print element statistics
 
 def NodeParser(line):
         
@@ -52,12 +66,16 @@ def NodeParser(line):
         
 
 def ElementParser(line):
-        data = re.findall(re.compile(r'\s*(\D+|\d+)\s*'),line)
+
+        pattern = re.compile(r'\s*([A-Za-z0-9]+|\d+)\s*')
+
+        data = pattern.findall(line)
         
         if data[1] == "E1LIN":
-             pass
-        elif data[1] == "E1QUAD":
-             pass
+             return E1LIN(np.array([data[2], data[3]]))
+        
+        # elif data[1] == "E1QUD":
+        #      pass
         else:
             raise TypeError("Element {0} not implemented, check documentation".format(data[1]))
 
