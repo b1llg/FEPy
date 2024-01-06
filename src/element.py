@@ -22,7 +22,7 @@ class Element(ABC):
 class E1LIN(Element):
 
     def N(self, gp: np.ndarray):
-        return np.array([1-gp[0], 1])
+        return np.array([1-gp[0], gp[0]])
     
     def B(self, gp: np.ndarray):
         return np.array([1, -1])
@@ -45,7 +45,7 @@ def main():
     e1 = E1LIN(np.array([n1,n2]))
     print(e1.nnodes)
 
-    print(e1.N())
+    print(e1.N(np.array([0.3])))
 
 if __name__ == "__main__":
     main()
