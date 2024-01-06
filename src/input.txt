@@ -1,10 +1,8 @@
-*BEGIN
 *NODE
 1   0   0   0
 2   1   0   0
 3   2   0   0
-*ELEMENT_E1LIN
+*ELEMENT
 #ID NDS
-1   1   2
-2   2   3   
-*END
+1   E1LIN   1   2
+2   E1LIN   2   3   
