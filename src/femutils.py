@@ -4,13 +4,15 @@ from node import Node
 from element import E1LIN
 import re
 
+def FilePathGenerator(input_file):
+         #https://stackoverflow.com/questions/4060221/how-to-reliably-open-a-file-in-the-same-directory-as-the-currently-running-scrip
+     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+     return os.path.join(__location__,input_file)
+
 def InputParser(input_file):
 
-    #https://stackoverflow.com/questions/4060221/how-to-reliably-open-a-file-in-the-same-directory-as-the-currently-running-scrip
-    __location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-    with open(os.path.join(__location__,input_file),"r") as file:
+    with open(FilePathGenerator(input_file)) as file:
 
         print("Input file: {0} => loaded\n".format(input_file))
         print("Reading data from input file...\n")
