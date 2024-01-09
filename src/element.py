@@ -7,6 +7,11 @@ class Element(ABC):
         self.id = id
         self.nodes = self.checkNodes(nodes)
         self.nnodes = self.nodes.size
+        
+    @property
+    @abstractmethod
+    def ndof():
+        pass
 
     @abstractmethod
     def N(self, gp: np.ndarray):
@@ -22,6 +27,10 @@ class Element(ABC):
 
 class E1LIN(Element):
 
+    @property
+    def ndof(self):
+        return 2
+
     def N(self, gp: np.ndarray):
         return np.array([1-gp[0], gp[0]])
     
@@ -35,7 +44,13 @@ class E1LIN(Element):
             raise ValueError("E1LIN requires 2 nodes, {0} nodes has been passed".format(nodes.size))
         return nodes
     
+    
+    
 class E1QUD(Element):
+
+    @property
+    def ndof(self):
+        return 3
 
     def N(self, gp: np.ndarray):
         return 0.5*np.array([-gp[0] * (1 - gp[0]), 
@@ -57,15 +72,30 @@ class E1QUD(Element):
 
 def main():
     # Create an E1LIN
-    n1 = Node(0,0,0)
-    n2 = Node(1,0,0)
-    n3 = Node(0.5, 0,0)
+    n1 = Node(1,0,0,0)
+    n2 = Node(2,1,0,0)
+    n3 = Node(3,0.5, 0,0)
 
 
-    e1 = E1LIN(np.array([n1,n2]))
-    print(e1.nnodes)
+    print("E1LIN: ")
+    e1 = E1LIN(1, np.array([n1,n2]))
 
-    print(e1.N(np.array([0.3])))
+    print("ndof: ",e1.ndof)
+
+    print("nnodes: ",e1.nnodes)
+
+    print("N(0.3): ",e1.N(np.array([0.3])))
+
+    print("\n")
+
+    print("E1QUD: ")
+    e2 = E1QUD(2, np.array([n1,n2,n3]))
+
+    print("ndof: ",e2.ndof)
+
+    print("nnodes: ",e2.nnodes)
+
+    print("N(0.3): ",e2.N(np.array([0.3])))
 
 if __name__ == "__main__":
     main()

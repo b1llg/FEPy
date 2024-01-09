@@ -3,6 +3,7 @@ import numpy as np
 from node import Node
 from element import E1LIN,E1QUD
 from boundarycondition import EssentialBc, ImposedBc
+from femcore import FemData
 import re
 
 def filePathGenerator(input_file):
@@ -74,10 +75,16 @@ def inputReader(input_file):
             
 
     print("Done reading => {0}!\n".format(input_file))
-    print(nodes)
-    print(elements)
-    print(essential_bcs)
-    print(imposed_bcs)
+    # print(nodes)
+    # print(elements)
+    # print(essential_bcs)
+    # print(imposed_bcs)
+
+
+    return FemData(np.array(elements),
+                   np.array(nodes),
+                   np.array(essential_bcs),
+                   np.array(imposed_bcs))
 
     # Print element statistics
 
@@ -103,17 +110,14 @@ def elementParser(line):
         raise TypeError("Element {0} not implemented, check documentation".format(data[1]))
 
 def boundaryConditionParser(line):
+    """
+    Given a line from input files, generate either a EssentialBc or ImposedBc
+    """
     pattern = re.compile(r'\s*([A-Za-z0-9]+|\d+)\s*')
 
     data = pattern.findall(line)
-    """
-    ********************
 
-    faire un dictionnaire avec des tags et des # éléments noeuds etc 
-    à référencer dans le code
     
-    
-    """
     if data[0] == "ESSENTIAL":
          return EssentialBc(data[1], np.array([data[2:]]))
     else:
@@ -121,7 +125,10 @@ def boundaryConditionParser(line):
 
 
 def main():
-    inputReader("input.txt")
+    fem_data = inputReader("input.txt")
+
+    print("test")
+    
 
 if __name__ == "__main__":
     main()
