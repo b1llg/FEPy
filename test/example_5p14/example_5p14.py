@@ -1,17 +1,13 @@
-# import fepy
-# import gmsh
-import os
-import meshio
+import numpy as np
+import fepy
 
-# read mesh file
+u = fepy.Field("u", np.array(["u"]))
 
-__location__ = os.path.realpath(
-os.path.join(os.getcwd(), os.path.dirname(__file__)))
+data = fepy.inputReader("example_5p14.i")
 
-input_file = "example_5p14.msh"
-mesh = meshio.read(os.path.join(__location__,input_file))
+model = fepy.Model(data, np.array(u))
 
-print(mesh)
+print(model.tdofs)
 
 
 

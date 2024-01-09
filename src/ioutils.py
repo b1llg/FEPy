@@ -125,9 +125,7 @@ def boundaryConditionParser(line):
 
 
 def main():
-    fem_data = inputReader("input.txt")
-
-    print("test")
+    pass
     
 
 if __name__ == "__main__":

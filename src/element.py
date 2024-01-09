@@ -7,6 +7,9 @@ class Element(ABC):
         self.id = id
         self.nodes = self.checkNodes(nodes)
         self.nnodes = self.nodes.size
+
+    def connect(self, connec_array: np.array):
+        self.connectivity = connec_array
         
     @property
     @abstractmethod
@@ -51,6 +54,16 @@ class E1QUD(Element):
     @property
     def ndof(self):
         return 3
+    
+    # @property
+    # def connec(self):
+    #     return self.connectivity
+
+    # @property
+    # @abstractmethod
+    # def connec(self, connec_array: np.array):
+    #     self.connectivity = connec_array
+
 
     def N(self, gp: np.ndarray):
         return 0.5*np.array([-gp[0] * (1 - gp[0]), 
@@ -80,7 +93,11 @@ def main():
     print("E1LIN: ")
     e1 = E1LIN(1, np.array([n1,n2]))
 
+    e1.connect(np.array([1,2]))
+
     print("ndof: ",e1.ndof)
+
+    print("Connectivity: ", e1.connectivity)
 
     print("nnodes: ",e1.nnodes)
 
