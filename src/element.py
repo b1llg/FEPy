@@ -3,7 +3,8 @@ from node import *
 import numpy as np
 
 class Element(ABC):
-    def __init__(self, nodes: np.ndarray):
+    def __init__(self, id: int, nodes: np.ndarray):
+        self.id = id
         self.nodes = self.checkNodes(nodes)
         self.nnodes = self.nodes.size
 
@@ -32,6 +33,25 @@ class E1LIN(Element):
             raise TypeError("Nodes should be of type np.array: {0} is beeing used".format(str(type(nodes))))
         elif nodes.size != 2:
             raise ValueError("E1LIN requires 2 nodes, {0} nodes has been passed".format(nodes.size))
+        return nodes
+    
+class E1QUD(Element):
+
+    def N(self, gp: np.ndarray):
+        return 0.5*np.array([-gp[0] * (1 - gp[0]), 
+                             2 * (1 - gp[0]**2), 
+                             gp[0] * (1 + gp[0])])
+    
+    def B(self, gp: np.ndarray):
+        return 0.5*np.array(-1 + 2*gp[0],
+                            -4*gp[0],
+                            1 + 2*gp[0])
+    
+    def checkNodes(self, nodes: np.array) -> np.ndarray:
+        if not isinstance(nodes, np.ndarray):
+            raise TypeError("Nodes should be of type np.array: {0} is beeing used".format(str(type(nodes))))
+        elif nodes.size != 3:
+            raise ValueError("E1QUD requires 3 nodes, {0} nodes has been passed".format(nodes.size))
         return nodes
     
 

@@ -1,5 +1,5 @@
-### FEPy: Simple finite element solver in python
-FEPy has been coded while reading: André Fortin - les éléments finis de la théorie à la pratique. ([Éléments finis de la théorie à la pratique](https://giref.ulaval.ca/afortin/elements_finis.pdf)). This book is written in french. It contains a tremendous amount of information on how to code finite element softwares. There is a good amount of theory and good examples.
+# FEPy: Simple Finite Element Solve in Python
 
-## FEPy with GMSH
-FEPy works with gmsh.  
+FEPy is built to solve simple finite element (FE) problems. The code methodology is based around the book by André Fortin: [Les éléments finis de la théorie à la pratique](https://giref.ulaval.ca/afortin/elements_finis.pdf).
+
+The main goal of FEPy is not be an efficient solve, but rather an easy to understand and easy to modify code to learn FE programming using the above book.
