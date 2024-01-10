@@ -3,8 +3,21 @@ import numpy as np
 from node import Node
 from element import E1LIN,E1QUD
 from boundarycondition import EssentialBc, ImposedBc
-from femcore import FemData
 import re
+
+class FemData:
+    """
+    Class that contains all the raw fem data
+    """
+    def __init__(self, elements: np.array, 
+                 nodes: np.array, 
+                 essential_bcs: np.array,
+                 imposed_bcs: np.array):
+        
+        self.elements = elements
+        self.nodes = nodes
+        self.essential_bcs = essential_bcs
+        self.imposed_bcs = imposed_bcs
 
 def filePathGenerator(input_file):
      """
@@ -94,7 +107,6 @@ def nodeParser(line):
     
     return Node(data[0], data[1], data[2], data[3])
         
-
 def elementParser(line):
 
     pattern = re.compile(r'\s*([A-Za-z0-9]+|\d+)\s*')
@@ -122,7 +134,6 @@ def boundaryConditionParser(line):
          return EssentialBc(data[1], np.array([data[2:]]))
     else:
          return ImposedBc(data[0], data[1:] )
-
 
 def main():
     pass

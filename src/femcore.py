@@ -1,18 +1,6 @@
 import numpy as np
+from ioutils import inputReader
 
-class FemData:
-    """
-    Class that contains all the raw fem data
-    """
-    def __init__(self, elements: np.array, 
-                 nodes: np.array, 
-                 essential_bcs: np.array,
-                 imposed_bcs: np.array):
-        
-        self.elements = elements
-        self.nodes = nodes
-        self.essential_bcs = essential_bcs
-        self.imposed_bcs = imposed_bcs
 
 class Field:
     """
@@ -34,13 +22,17 @@ class Model:
         """
         Compute total dof to generate the stiffness matrix
         """
+        
+        # Initialize tdofs 
         self.tdofs = 0
         
+        # Loop over fields and add the corresponding number of dofs
+        # per node
         for field in self.fields:
             self.tdofs += field.dof_per_node * self.fem_data.nodes.size
 
-    def __init__(self, fem_data : FemData, field_array : np.array(Field) ):
-        self.fem_data = fem_data
+    def __init__(self, input_file: str, field_array : np.array(Field) ):
+        self.fem_data = inputReader(input_file) 
         self.fields = field_array
 
         self.SetTotalDofs()
