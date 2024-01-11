@@ -1,10 +1,9 @@
-from node import *
-from femcore import *
+import fepy
 
 def main():
-    u = Field("u",np.array(["u"]))
+    u = fepy.Field("u",np.array(["u"]))
 
-    model = Model("input.txt", np.array([u]))
+    model = fepy.Model("input.txt", np.array([u]))
 
     print(model.tdofs)
     # fem_data.SetTotalDofs()

@@ -23,6 +23,6 @@ class EssentialBc(BoundaryCondition):
     Boundary conditions applied to node. These are conditions related to the know value of the studied variable
     
     """
-    def __init__(self, nodes: np.array, dofs: np.ndarray):
+    def __init__(self, nodes: np.array(Node), dofs: np.ndarray):
         self.nodes = nodes
         self.dofs = dofs
