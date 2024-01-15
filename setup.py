@@ -1,1 +1,1 @@
-# Project steup
+# Project setup

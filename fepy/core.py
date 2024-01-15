@@ -1,5 +1,5 @@
 import numpy as np
-from ioutils import inputReader
+from fepy.io import inputReader
 
 
 class Field:
