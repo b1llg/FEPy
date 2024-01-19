@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from node import *
 import numpy as np
+
+from fepy.node import *
+
 
 class Element(ABC):
     def __init__(self, id: int, nodes: np.ndarray):

@@ -1,4 +1,4 @@
-from node import Node
+from fepy.node import Node
 import numpy as np
 from abc import ABC
 

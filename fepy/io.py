@@ -1,9 +1,12 @@
 import os
-import numpy as np
-from node import Node
-from element import E1LIN,E1QUD
-from boundarycondition import EssentialBc, ImposedBc
 import re
+
+import numpy as np
+
+from fepy.node import Node
+from fepy.element import E1LIN,E1QUD
+from fepy.boundarycondition import EssentialBc, ImposedBc
+
 
 class FemData:
     """
