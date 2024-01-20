@@ -2,24 +2,24 @@ import os
 
 import numpy as np
 
-from fepy.core import Field, Model
+from fepy.core import Field, Model, Space, Lagrangian
 
 def main():
     """
     Test a basic case of a loaded cable. From [Les éléments finis de la théorie à la pratique]()
     """
 
-    # Create a 1d displacement field
+    # # Create a 1d displacement field
     u = Field("displacement",np.array(["u"]))
 
+    s = Space(Lagrangian,2) # H2
+
     # read model data and assign displacement field
-    print(os.getcwd())
-    model = Model("example_5p14.txt", np.array([u]))
+    path = os.path.join(os.path.dirname(__file__), "example_5p14.msh")
 
-    print(model.tdofs)
-    # fem_data.SetTotalDofs()
+    model = Model(path, np.array([u]), np.array([s]))
 
-    # print(fem_data.tdof)
+    # print(model.tdofs)
 
 if __name__ == "__main__":
     main()

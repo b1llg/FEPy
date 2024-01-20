@@ -93,7 +93,7 @@ def main():
 
 
     print("E1LIN: ")
-    e1 = E1LIN(1, np.array([n1,n2]))
+    e1 = line(1, np.array([n1,n2]))
 
     e1.connect(np.array([1,2]))
 
