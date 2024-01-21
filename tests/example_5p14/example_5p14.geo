@@ -20,11 +20,3 @@ Physical Point("Load_Point") = {3};
 Physical Curve("Loaded_Section") = {1};
 Physical Curve("volume") = {2,3};
 
-// // Set mesh properties
-// Mesh.ElementOrder = 2;
-// Mesh 1;
-
-
-
-
-// Save "example_5p14.msh";

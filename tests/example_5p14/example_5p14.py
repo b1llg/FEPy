@@ -2,7 +2,8 @@ import os
 
 import numpy as np
 
-from fepy.core import Field, Model, Space, Lagrangian
+from fepy.core import Field, Model
+from fepy.space import Space, Lagrangian
 
 def main():
     """
@@ -15,7 +16,7 @@ def main():
     s = Space(Lagrangian,2) # H2
 
     # read model data and assign displacement field
-    path = os.path.join(os.path.dirname(__file__), "example_5p14.msh")
+    path = os.path.join(os.path.dirname(__file__), "example_5p14")
 
     model = Model(path, np.array([u]), np.array([s]))
 

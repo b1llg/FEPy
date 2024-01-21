@@ -19,15 +19,12 @@ Transfinite Surface{1} = {1,2,3,4};
 
 Recombine Surface{1};
 
-// Boundaries
-Physical Curve("bc_essential") = {4};
-Physical Point("bc_load") = {2};
-Physical Surface("volume") = {1};
+// // Boundaries
+// Physical Curve("bc_essential") = {4};
+// Physical Point("bc_load") = {2};
+// Physical Surface("volume") = {1};
 
-// // Set mesh properties
-Mesh.ElementOrder = 2;
-Mesh 2;
-// Mesh.HighOrderOptimize = 2;
-
-
-Save "2x2square.msh";
+// // // Set mesh properties
+// Mesh.ElementOrder = 2;
+// Mesh 2;
+// // Mesh.HighOrderOptimize = 2;

@@ -1,41 +1,9 @@
 import os
-from abc import ABC
 
 import numpy as np
 
-from fepy.io import inputReader
-
-class FEtype(ABC):
-    """
-    defines type of finite element
-    """
-    pass
-
-class Lagrangian(FEtype):
-    """
-    defines Lagrangians finite element type
-    """
-    pass
-
-class Hermite(FEtype):
-    """
-    Defines Hermite finite element type
-    """
-    pass
-
-
-class Space:
-    """
-    Defines the finite element space and calls the appropriate order in mesh generation
-    """
-    def __init__(self, fetype = Lagrangian, order = 1):
-        """
-        Initialize a finite element space for the model:
-        input:  fetype: Type of finite element (LagrangianFE as default)
-                order: order of the polynomials (1 as default)
-        """
-        self.fetype = fetype
-        self.order = order
+from fepy.io import inputReader, meshGen
+from fepy.space import FEtype, Lagrangian, Hermite, MINI
 
 
 class Field:
@@ -51,7 +19,10 @@ class Field:
 
 class Model:
     """
-    A Model is what we are trying to solve
+    A Model is what we are trying to solve:
+    input_file: name of the gmsh file (.geo extension) with full path
+    field_array: array of all the fields to be solved
+    space_array: array of all the space associated to each field
     """
 
     def SetTotalDofs(self):
@@ -70,8 +41,20 @@ class Model:
     def __init__(self, input_file: str, field_array : np.array(Field), space_array : np.array(FEtype)):
         if field_array.size != space_array.size:
             raise ValueError("Field size is not the same size a space size")
+        
+        #Determine highest order
+        order = 0
+        for s in  space_array:
+            # Loop over model spaces, determine equivalent order to generate adequate mesh
+            if s.fetype.equiv_order(s.order) > order:
+                order = s.fetype.equiv_order(s.order)
 
-        self.fem_data = inputReader(input_file) 
+        # generate mesh
+        mesh_file = meshGen(input_file, order)
+
+        # read data from mesh file
+        self.fem_data = inputReader(mesh_file) 
+
         self.fields = field_array
 
         self.SetTotalDofs()

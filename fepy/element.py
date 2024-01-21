@@ -87,13 +87,13 @@ class E1QUD(Element):
 
 def main():
     # Create an E1LIN
-    n1 = Node(1,0,0,0)
-    n2 = Node(2,1,0,0)
-    n3 = Node(3,0.5, 0,0)
+    n1 = Node(0,0,0)
+    n2 = Node(1,0,0)
+    n3 = Node(0.5,0,0)
 
 
     print("E1LIN: ")
-    e1 = line(1, np.array([n1,n2]))
+    e1 = E1LIN(1, np.array([n1,n2]))
 
     e1.connect(np.array([1,2]))
 
