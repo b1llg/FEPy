@@ -13,7 +13,7 @@ def main():
     # # Create a 1d displacement field
     u = Field("displacement",np.array(["u"]))
 
-    s = Space(Lagrangian,1) # H2
+    s = Space(Lagrangian,3)
 
     # read model data and assign displacement field
     path = os.path.join(os.path.dirname(__file__), "2x2square")

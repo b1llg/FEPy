@@ -19,4 +19,3 @@ Physical Point("BC_Fix") = {1,4};
 Physical Point("Load_Point") = {3};
 Physical Curve("Loaded_Section") = {1};
 Physical Curve("volume") = {2,3};
-

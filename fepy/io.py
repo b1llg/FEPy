@@ -5,7 +5,7 @@ import numpy as np
 import meshio
 
 from fepy.node import Node
-from fepy.element import E1LIN,E1QUD
+from fepy.element import E1L1,E1L2
 from fepy.boundarycondition import EssentialBc, ImposedBc
 
 
@@ -57,20 +57,103 @@ def inputReader(input_file):
 
 
 def gmshParser(input_file):
-     """
-     Parse gmsh file format input files to generate fe data
-     """
-     mesh = meshio.read(input_file)
+    """
+    Parse gmsh file format input files to generate fe data
+    """
+    # read data in
+    mesh = meshio.read(input_file)
 
-     nodes = []
+    # initialize a node container
+    nodes = []
 
     # Generate node data from meshio object
-     for node in mesh.points:
-         nodes.append(Node(node[0], node[1], node[2]))
+    """
+    ****** Maybe consider not generating node data inside IO in case somehow one day, there may be particles 
+    ****** instead of nodes
+    """
+    for node in mesh.points:
+        nodes.append(Node(node[0], node[1], node[2]))
 
-    # 
+    # Retrieve element data
+    vertex = []
 
-     print(nodes)
+    line = []
+    line3 = []
+    line4 = []
+
+    triangle = []
+    triangle6 = []
+    triangle10 = []
+
+    quad = []
+    quad9 = []
+    quad16 = []
+
+    for cells in mesh.cells:
+
+        # since arrays are inside arrays. Must use a list comprehension to extract all levels
+        # of possible data in each type of cells
+        match cells.type:
+            case 'vertex':
+                [vertex.append(arr) for arr in cells.data]
+
+            case 'line':                 
+                [line.append(arr) for arr in cells.data]
+
+            case 'line3':
+                [line3.append(arr) for arr in cells.data]
+
+            case 'line4':
+                [line4.append(arr) for arr in cells.data]
+
+            case 'triangle':
+                [triangle.append(arr) for arr in cells.data]
+
+            case 'triangle6':
+                [triangle6.append(arr) for arr in cells.data]
+
+            case 'triangle10':
+                [triangle10.append(arr) for arr in cells.data]
+
+            case 'quad':
+                [quad.append(arr) for arr in cells.data]
+
+            case 'quad9':
+                [quad9.append(arr) for arr in cells.data]
+
+            case 'quad16':
+                [quad16.append(arr) for arr in cells.data]
+            
+            case _:
+                raise ValueError("cell type {0} invalid, check geo file for possible error leading to a error in .msh file". format(cells.type))
+
+
+            # to do : 3d elements
+
+    
+    
+    # Extract bcs data
+    bcs_vertex = []
+
+    bcs_line = []
+    bcs_line3 = []
+    bcs_line4 = []
+
+    bcs_triangle = []
+    bcs_triangle6 = []
+    bcs_triangle10 = []
+
+    bcs_quad = []
+    bcs_quad9 = []
+    bcs_quad16 = []
+
+    for sets in mesh.cell_sets_dict:
+        # loop over each sets and add to the correct bcs list
+        pass
+            
+
+
+    
 
      
 

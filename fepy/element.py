@@ -30,7 +30,10 @@ class Element(ABC):
     def checkNodes(self, nodes):
         pass
 
-class E1LIN(Element):
+class E1L1(Element):
+    """
+    1d Lagrange 1st order element
+    """
 
     @property
     def ndof(self):
@@ -51,7 +54,10 @@ class E1LIN(Element):
     
     
     
-class E1QUD(Element):
+class E1L2(Element):
+    """
+    1d Lagrange 2nd order element
+    """
 
     @property
     def ndof(self):
@@ -92,8 +98,8 @@ def main():
     n3 = Node(0.5,0,0)
 
 
-    print("E1LIN: ")
-    e1 = E1LIN(1, np.array([n1,n2]))
+    print("E1L1: ")
+    e1 = E1L1(1, np.array([n1,n2]))
 
     e1.connect(np.array([1,2]))
 
@@ -107,8 +113,8 @@ def main():
 
     print("\n")
 
-    print("E1QUD: ")
-    e2 = E1QUD(2, np.array([n1,n2,n3]))
+    print("E1L3: ")
+    e2 = E1L1(2, np.array([n1,n2,n3]))
 
     print("ndof: ",e2.ndof)
 
