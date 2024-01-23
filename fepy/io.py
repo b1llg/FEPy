@@ -1,8 +1,8 @@
 import os
 
-
 import meshio
 
+import fepy.space
 
 
 class FemData:
@@ -49,7 +49,6 @@ def inputReader(input_file):
 
      else:
          raise ValueError("Unssuported: '.{0}' file format. For now only '.gmsh' format is supported")
-
 
 def gmshParser(input_file):
     """
@@ -151,11 +150,41 @@ def gmshParser(input_file):
 
     # return
     return FemData(nodes, elements, domains)
-        
-
-
     
+def elementParser(element_type: str, elements : list, space: fepy.space.Space):
+    match element_type:
+            case 'line':                 
+                pass
 
+            case 'line3':
+                pass
+
+            case 'line4':
+                pass
+
+            case 'triangle':
+                pass
+
+            case 'triangle6':
+                pass
+
+            case 'triangle10':
+                pass
+
+            case 'quad':
+                pass
+
+            case 'quad9':
+                pass
+
+            case 'quad16':
+                pass
+            
+            case _:
+                raise ValueError("Something is wrong here: fepy.io.elementParse. A check has not been done beforehand. Got {0} has element type".format(element_type))
+
+
+            # to do : 3d elements
      
 
 
