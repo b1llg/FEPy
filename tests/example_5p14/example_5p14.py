@@ -11,14 +11,16 @@ def main():
     """
 
     # # Create a 1d displacement field
-    u = Field("displacement",np.array(["u"]))
+    u = Field("displacement",["u"])
 
-    s = Space(Lagrangian,2) # H2
+    # Initialize function of type Lagrangian order 2 to solve the problem.
+    # The problem is still in H1 but we use H2 functions.
+    s = Space(Lagrangian,2)
 
     # read model data and assign displacement field
     path = os.path.join(os.path.dirname(__file__), "example_5p14")
 
-    model = Model(path, np.array([u]), np.array([s]))
+    model = Model(path ,[u], [s])
 
     # print(model.tdofs)
 

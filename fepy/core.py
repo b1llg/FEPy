@@ -12,10 +12,10 @@ class Field:
     - Heat Transfer : Temperature (scalar)
     - Solid Mechanics: Displacement (vector)
     """
-    def __init__(self, name : str, components: np.array):
+    def __init__(self, name : str, components: list):
         self.name = name
         self.components = components
-        self.dof_per_node = components.size
+        self.dof_per_node = len(components)
 
 class Model:
     """
@@ -25,21 +25,11 @@ class Model:
     space_array: array of all the space associated to each field
     """
 
-    def SetTotalDofs(self):
-        """
-        Compute total dof to generate the stiffness matrix
-        """
+    def __init__(self, input_file: 
+                 str, field_array : list, 
+                 space_array : list):
         
-        # Initialize tdofs 
-        self.tdofs = 0
-        
-        # Loop over fields and add the corresponding number of dofs
-        # per node
-        for field in self.fields:
-            self.tdofs += field.dof_per_node * self.fem_data.nodes.size
-
-    def __init__(self, input_file: str, field_array : np.array(Field), space_array : np.array(FEtype)):
-        if field_array.size != space_array.size:
+        if len(field_array) != len(space_array):
             raise ValueError("Field size is not the same size a space size")
         
         #Determine highest order
@@ -52,13 +42,12 @@ class Model:
         # generate mesh
         mesh_file = meshGen(input_file, order)
 
-        # read data from mesh file
+        # get raw data from input file
         self.fem_data = inputReader(mesh_file) 
 
+        #Parse raw data and associate gmsh data to FEpy element formulation
         self.fields = field_array
 
-        self.SetTotalDofs()
-        pass
 
 def main():
     pass

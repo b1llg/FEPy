@@ -1,27 +1,22 @@
 import os
-import re
 
-import numpy as np
+
 import meshio
 
-from fepy.node import Node
-from fepy.element import E1L1,E1L2
-from fepy.boundarycondition import EssentialBc, ImposedBc
 
 
 class FemData:
     """
     Class that contains all the raw fem data
     """
-    def __init__(self, elements: np.array, 
-                 nodes: np.array, 
-                 essential_bcs: np.array,
-                 imposed_bcs: np.array):
+    def __init__(self, 
+                 nodes: list, 
+                 elements: list, 
+                 domains: dict):
         
         self.elements = elements
         self.nodes = nodes
-        self.essential_bcs = essential_bcs
-        self.imposed_bcs = imposed_bcs
+        self.domains = domains
 
 def meshGen(input_file: str, order: int):
     """
@@ -58,7 +53,7 @@ def inputReader(input_file):
 
 def gmshParser(input_file):
     """
-    Parse gmsh file format input files to generate fe data
+    Parse gmsh file format input files to generate fe data. 
     """
     # read data in
     mesh = meshio.read(input_file)
@@ -67,12 +62,8 @@ def gmshParser(input_file):
     nodes = []
 
     # Generate node data from meshio object
-    """
-    ****** Maybe consider not generating node data inside IO in case somehow one day, there may be particles 
-    ****** instead of nodes
-    """
     for node in mesh.points:
-        nodes.append(Node(node[0], node[1], node[2]))
+        nodes.append([node[0], node[1], node[2]])
 
     # Retrieve element data
     vertex = []
@@ -88,6 +79,9 @@ def gmshParser(input_file):
     quad = []
     quad9 = []
     quad16 = []
+
+    #3d elements
+
 
     for cells in mesh.cells:
 
@@ -130,27 +124,34 @@ def gmshParser(input_file):
 
             # to do : 3d elements
 
-    
-    
-    # Extract bcs data
-    bcs_vertex = []
+    # Create element dict
+    elements = dict()
 
-    bcs_line = []
-    bcs_line3 = []
-    bcs_line4 = []
+    elements["vertex"] = vertex
 
-    bcs_triangle = []
-    bcs_triangle6 = []
-    bcs_triangle10 = []
+    elements["line"] = line
+    elements["line3"] = line3
+    elements["line4"] = line4
 
-    bcs_quad = []
-    bcs_quad9 = []
-    bcs_quad16 = []
+    elements["triangle"] = triangle
+    elements["triangle6"] = triangle6
+    elements["triangle10"] = triangle10
 
-    for sets in mesh.cell_sets_dict:
-        # loop over each sets and add to the correct bcs list
-        pass
-            
+    elements["quad"] = quad
+    elements["quad9"] = quad9
+    elements["quad16"] = quad16
+
+    # 3d
+
+    # Extract domain data
+    domains = dict()
+    for subdomain in mesh.cell_sets_dict.keys():
+        if (subdomain not in domains) and ("gmsh" not in subdomain):
+            domains[subdomain] = mesh.cell_sets_dict[subdomain]
+
+    # return
+    return FemData(nodes, elements, domains)
+        
 
 
     
