@@ -4,6 +4,8 @@ import meshio
 
 import fepy.space
 
+import fepy.element
+
 
 class FemData:
     """
@@ -151,34 +153,80 @@ def gmshParser(input_file):
     # return
     return FemData(nodes, elements, domains)
     
-def elementParser(element_type: str, elements : list, space: fepy.space.Space):
+def elementParser(element_type: str, space: fepy.space.Space):
+
     match element_type:
             case 'line':                 
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    return fepy.element.E1L1
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'line3':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    return fepy.element.E1L2
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'line4':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'triangle':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'triangle6':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'triangle10':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'quad':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'quad9':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
 
             case 'quad16':
-                pass
+                if space.fetype == fepy.space.Lagrangian:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                elif space.fetype == fepy.space.Hermite:
+                    raise NotImplementedError("{0} function is not yet implemented for {1} element".format(space.fetype, element_type))
+                else:
+                    raise TypeError('Element {0} as no formulation {1}, check space assignment'.format(element_type,space.fetype))
             
             case _:
                 raise ValueError("Something is wrong here: fepy.io.elementParse. A check has not been done beforehand. Got {0} has element type".format(element_type))

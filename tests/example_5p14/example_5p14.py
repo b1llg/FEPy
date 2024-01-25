@@ -14,13 +14,9 @@ def main():
     # # Create a 1d displacement field
     u = Field("displacement",["u"])
 
-    # test, temperature field
-    t = Field("temperature", ["T"])
-
-    # Initialize function of type Lagrangian order 2 to solve the problem.
+      # Initialize function of type Lagrangian order 2 to solve the problem.
     # The problem is still in H1 but we use H2 functions.
     s_u = Space(Lagrangian,2)
-    s_t = Space(Hermite,2)
 
     #*********************************************************
     #                   Boundaries
@@ -40,9 +36,9 @@ def main():
     # read model data and assign displacement field
     path = os.path.join(os.path.dirname(__file__), "example_5p14")
 
-    model = Model(path ,[u,t], [s_u,s_t])
+    model = Model(path ,[u], [s_u])
     
-
+    print("test")
     # print(model.tdofs)
 
 if __name__ == "__main__":

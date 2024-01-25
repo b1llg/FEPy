@@ -21,17 +21,25 @@ class Field:
 
         sapce: function space associated to the current field behind builded
         """
+        parsed_element = []
+        
         for element_type in fem_data.elements.keys():
-            # Todo: Design map to convert and extract node 
-            # Check element parser in fepy.io
 
             # Dont consider vertex because they are not element types, exclude element types that are empty
             if  not element_type == "vertex" and len(fem_data.elements[element_type]) > 0:
 
-                parsed_elements = fepy.io.elementParser(element_type, fem_data.elements[element_type], space)
+                # get the type of space function
+                func_type = fepy.io.elementParser(element_type, space)
 
-                for element in fem_data.elements[element_type]:
-                    print(element)
+                # for each element of the current type, create an object of the class func_type -> fepy.element
+                for nodes in fem_data.elements[element_type]:
+                    parsed_element.append(func_type(nodes))
+        
+        self.elements = np.array(parsed_element) #create array of elements for the field
+
+
+
+
 
     def __init__(self, name : str, components: list):
         self.name = name
@@ -46,7 +54,7 @@ class Model:
     space_array: array of all the space associated to each field
     """
     def set_fields(self,
-                   fem_data : fepy.io.FemData, 
+                   fem_data: fepy.io.FemData,
                    field_array: list, 
                    space_array: list):
         """
@@ -55,7 +63,9 @@ class Model:
         for field, space in zip(field_array, space_array):
 
             # WIP
-            field.set_element(self.fem_data, space)
+            field.set_element(fem_data, space)
+
+        self.fields = field_array # assign fields to model
 
 
     def __init__(self, input_file: str, 
@@ -81,10 +91,20 @@ class Model:
         mesh_file = fepy.io.meshGen(input_file, order)
 
         # get raw data from input file
-        self.fem_data = fepy.io.inputReader(mesh_file) 
+        fem_data = fepy.io.inputReader(mesh_file) 
+
+
+        # assign node
+        self.nodes = fem_data.nodes
+
+        # assign domains
+        #***********
+        #    to do: extract boundaries and assign them to 
 
         # Now that the data is parsed, each field should have its own element data
-        self.set_fields(self.fem_data,  field_array, space_array)
+        self.set_fields(fem_data, field_array, space_array)
+
+        
 
 
 

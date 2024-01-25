@@ -5,8 +5,7 @@ from fepy.node import *
 
 
 class Element(ABC):
-    def __init__(self, id: int, nodes: np.ndarray):
-        self.id = id
+    def __init__(self, nodes: np.ndarray):
         self.nodes = self.checkNodes(nodes)
         self.nnodes = self.nodes.size
 
