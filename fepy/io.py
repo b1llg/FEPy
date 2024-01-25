@@ -1,9 +1,8 @@
-import os
+import subprocess
 
 import meshio
 
 import fepy.space
-
 import fepy.element
 
 
@@ -31,7 +30,14 @@ def meshGen(input_file: str, order: int):
 
     # send shell command to generate mesh based on input order
     try:
-        os.system("gmsh {0}.geo -order {1} -3".format(input_file,order))
+
+
+        # os.system("gmsh {0}.geo -order {1} -3".format(input_file,order))
+        subprocess.run(["gmsh", "{0}.geo".format(input_file), "-order", "{0}".format(order), "-3"],
+                       capture_output= False,
+                       check=True,
+                       stdout=subprocess.DEVNULL
+                       )
 
         # if no error, return msh file
         return input_file + ".msh"
@@ -233,7 +239,6 @@ def elementParser(element_type: str, space: fepy.space.Space):
 
 
             # to do : 3d elements
-     
 
 
 def main():

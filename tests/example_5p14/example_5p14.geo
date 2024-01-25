@@ -15,7 +15,8 @@ Transfinite Curve{2} = 3;
 Transfinite Curve{3} = 2;
 
 // Boundaries
-Physical Point("BC_Fix") = {1,4};
-Physical Point("Load_Point") = {3};
-Physical Curve("Loaded_Section") = {1};
+Physical Point("bc_fix") = {1,4};
+Physical Point("load_point") = {3};
+Physical Curve("loaded_section_ramp") = {1};
+Physical Curve("loaded_section_const") = {2,3};
 Physical Curve("volume") = {1,2,3};

@@ -4,6 +4,7 @@ import numpy as np
 
 import fepy.io
 import fepy.space 
+import fepy.boundarycondition
 
 
 class Field:
@@ -62,10 +63,21 @@ class Model:
         """
         for field, space in zip(field_array, space_array):
 
-            # WIP
+            # Call set element function
             field.set_element(fem_data, space)
 
         self.fields = field_array # assign fields to model
+
+    # def checkBcExist(self, boundary_name: str):
+    #     return true if boundary_name in self.
+
+    def add_EssentialBc(self, essential_bc: fepy.boundarycondition.EssentialBc):
+        """
+        This function adds essential boundary condition to the problem.
+
+        First it checks that the boundary is defined
+        """
+        fepy.io.checkBcExist(essential_bc.boundary_name)
 
 
     def __init__(self, input_file: str, 

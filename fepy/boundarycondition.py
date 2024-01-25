@@ -8,15 +8,15 @@ class BoundaryCondition(ABC):
     """
     pass
 
-class ImposedBc(BoundaryCondition):
+class LoadBc(BoundaryCondition):
     """
     Boundary conditions applied to elements or node. These are conditions related to external values or natural conditions 
     Refers and entity id (eid or nid for element id or node id) by label. 
     Implementation is done in the main script
     """
-    def __init__(self,label : str, entity_ids : np.array):
+    def __init__(self,label : str, dofs : list):
         self.label = label
-        self.entity_ids = entity_ids
+        self.dofs = dofs
 
 class EssentialBc(BoundaryCondition):
     """
