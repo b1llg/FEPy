@@ -2,28 +2,33 @@ import os
 
 import numpy as np
 
-from fepy.core import Field, Model
-from fepy.space import Space, Lagrangian, Hermite
 from fepy.boundarycondition import EssentialBc, LoadBc
+from fepy.fem import TrialFunction, WeightFunction, BilinearForm
+from fepy.core import Field, Model
+from fepy.space import Space, Lagrangian
+from fepy.operator import grad, dot
+
+
 
 def main():
     """
     Test a basic case of a loaded cable. From [Les éléments finis de la théorie à la pratique]()
     """
 
-    # # Create a 1d displacement field
-    u = Field("displacement",["u"])
+    # # Create a 1d displacement field and its test function
+    disp = Field("displacement",["u"])
 
-      # Initialize function of type Lagrangian order 2 to solve the problem.
+    # Initialize function of type Lagrangian order 2 to solve the problem.
     # The problem is still in H1 but we use H2 functions.
-    s_u = Space(Lagrangian,2)
+    # create trial function and weight function, dimensions will match the field it's added to
 
-    #*********************************************************
-    #                   Boundaries
-    #
-    #   Names must match the ones created in the .geo file
-    #
-    #*********************************************************
+    s_uw = Space(Lagrangian,2)
+
+    u = TrialFunction(s_uw)
+
+    w = WeightFunction(s_uw)
+
+
 
     # Define boundary conditions: fixed boundary at each end
     gamma_u = EssentialBc("bc_fix", [0])
@@ -32,13 +37,20 @@ def main():
     gamma_l = LoadBc("load_point", [-150])
 
     # Define distributed load on line #1
-    def load_function(x):
+    def pload(x):
         return -1*(6+40*x)
     
     gamma_dl1 = LoadBc("loaded_section_ramp", [load_function])
 
     # Define constant load on other elements
     gamma_dl2 = LoadBc("loaded_section_const", [6])
+
+    # Define constant tension
+    tension = 400 # N
+
+    # Generate bilinear form from the weak form
+    a = lambda  u, w, x : pload(x)*u*w + tension*grad(u)*grad(w)
+    l = lambda r : r(x)
 
     # read model data and assign displacement field
     path = os.path.join(os.path.dirname(__file__), "example_5p14") # since working in /tests, must use complete path as file input

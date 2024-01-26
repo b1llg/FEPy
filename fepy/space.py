@@ -41,7 +41,7 @@ class MINI(FEtype):
         
 class Space:
     """
-    Defines the finite element space and calls the appropriate order in mesh generation
+    Defines the finite element type part of the desired fe space and calls the appropriate order in mesh generation
     """
     def __init__(self, fetype = Lagrangian, order = 1):
         """

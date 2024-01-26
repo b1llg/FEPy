@@ -8,9 +8,6 @@ class Element(ABC):
     def __init__(self, nodes: np.ndarray):
         self.nodes = self.checkNodes(nodes)
         self.nnodes = self.nodes.size
-
-    def connect(self, connec_array: np.array):
-        self.connectivity = connec_array
         
     @property
     @abstractmethod
@@ -98,9 +95,7 @@ def main():
 
 
     print("E1L1: ")
-    e1 = E1L1(1, np.array([n1,n2]))
-
-    e1.connect(np.array([1,2]))
+    e1 = E1L1(np.array([n1,n2]))
 
     print("ndof: ",e1.ndof)
 

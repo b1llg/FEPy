@@ -5,13 +5,12 @@ import numpy as np
 import fepy.io
 import fepy.space 
 import fepy.boundarycondition
+import fepy.fem
 
 
 class Field:
     """
-    A field is what is studied. 
-    - Heat Transfer : Temperature (scalar)
-    - Solid Mechanics: Displacement (vector)
+    A FEM function is either a trial or test function 
     """
     def set_element(self,fem_data: fepy.io.FemData, space: fepy.space.Space):
         """
@@ -38,10 +37,6 @@ class Field:
         
         self.elements = np.array(parsed_element) #create array of elements for the field
 
-
-
-
-
     def __init__(self, name : str, components: list):
         self.name = name
         self.components = components
@@ -57,7 +52,7 @@ class Model:
     def set_fields(self,
                    fem_data: fepy.io.FemData,
                    field_array: list, 
-                   space_array: list):
+                   space_array: list,):
         """
         This functions parses the femdata and create element data for each fields.
         """
@@ -115,11 +110,7 @@ class Model:
 
         # Now that the data is parsed, each field should have its own element data
         self.set_fields(fem_data, field_array, space_array)
-
-        
-
-
-
+     
 
 def main():
     pass

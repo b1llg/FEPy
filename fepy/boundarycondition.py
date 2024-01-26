@@ -20,7 +20,7 @@ class LoadBc(BoundaryCondition):
 
 class EssentialBc(BoundaryCondition):
     """
-    Boundary conditions applied to node. These are conditions related to the know value of the studied variable
+    Boundary conditions applied to node. These are conditions related to the known value of the studied variable
     
     """
     def __init__(self, boundary_name : str, dofs : list):
