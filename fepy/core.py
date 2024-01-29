@@ -4,8 +4,7 @@ import numpy as np
 
 import fepy.io
 import fepy.space 
-import fepy.boundarycondition
-import fepy.fem
+
 
 
 class Field:
@@ -40,7 +39,6 @@ class Field:
     def __init__(self, name : str, components: list):
         self.name = name
         self.components = components
-        self.dof_per_node = len(components)
 
 class Model:
     """
@@ -49,13 +47,21 @@ class Model:
     field_array: array of all the fields to be solved
     space_array: array of all the space associated to each field
     """
-    def set_fields(self,
+    def set_fields_domains(self,
                    fem_data: fepy.io.FemData,
                    field_array: list, 
                    space_array: list,):
         """
-        This functions parses the femdata and create element data for each fields.
+        This functions parses the femdata and create element data for each fields and
+        parses the domain and add the correct domains to the correct type:
+            vertex
+            line
+            surface
+            specific volume
+
+        also adds the correct element to the correct boundary
         """
+        # Set the fields
         for field, space in zip(field_array, space_array):
 
             # Call set element function
@@ -63,17 +69,18 @@ class Model:
 
         self.fields = field_array # assign fields to model
 
+        # Set the domains, for now simply takes the data from fem_data
+        self.domains = fem_data.domains
+
+        # set the total numbe of dofs
+        self.dofpn = 0
+        for field in  self.fields:
+                self.dofpn += len(field.components)
+
+        self.tdof = len(self.nodes) * self.dofpn
+    
     # def checkBcExist(self, boundary_name: str):
     #     return true if boundary_name in self.
-
-    def add_EssentialBc(self, essential_bc: fepy.boundarycondition.EssentialBc):
-        """
-        This function adds essential boundary condition to the problem.
-
-        First it checks that the boundary is defined
-        """
-        fepy.io.checkBcExist(essential_bc.boundary_name)
-
 
     def __init__(self, input_file: str, 
                  field_array : list, 
@@ -104,13 +111,17 @@ class Model:
         # assign node
         self.nodes = fem_data.nodes
 
-        # assign domains
-        #***********
-        #    to do: extract boundaries and assign them to 
-
         # Now that the data is parsed, each field should have its own element data
-        self.set_fields(fem_data, field_array, space_array)
+        self.set_fields_domains(fem_data, field_array, space_array)
      
+    def set_essentials(self, essential_bcs : list):
+        """
+        This functions sets the essentials conditons to build the problem
+        """
+        # Initialize the numer array
+        for bc in essential_bcs:
+            pass
+
 
 def main():
     pass

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-from fepy.node import *
+import fepy.node
 
 
 class Element(ABC):
@@ -89,9 +89,9 @@ class E1L2(Element):
 
 def main():
     # Create an E1LIN
-    n1 = Node(0,0,0)
-    n2 = Node(1,0,0)
-    n3 = Node(0.5,0,0)
+    n1 = fepy.Node(0,0,0)
+    n2 = fepy.Node(1,0,0)
+    n3 = fepy.Node(0.5,0,0)
 
 
     print("E1L1: ")
