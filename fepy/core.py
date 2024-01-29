@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 
+import fepy.boundary
 import fepy.io
 import fepy.space 
 
@@ -79,8 +80,38 @@ class Model:
 
         self.tdof = len(self.nodes) * self.dofpn
     
-    # def checkBcExist(self, boundary_name: str):
-    #     return true if boundary_name in self.
+        # set domains
+        self.domains = dict
+
+        for subdomain in fem_data.domains:
+
+            # Access boundary data
+            eltype = list(fem_data.domains[subdomain].keys())[0] # vertex, line, quad, etc
+            
+            items = []   # initialize a item container
+            
+            # retrieve element definition
+            for el_item in list(fem_data.domains[subdomain].values())[0]:
+                items.append(el_item)
+
+            # retrieve FEPy type
+            eltype_init = fepy.io.elementParser(eltype)
+
+            if eltype == 'vertex':
+                # Means that each entry in item is a node, can be parsed as is
+                nodes = []
+                for it in items:
+                    nodes.append(fem_data.nodes[it])
+
+                
+
+            else:
+                # Means that is an element, must retrieve each node of each 
+                # element to define the element
+                pass
+
+            self.domains[subdomain] = fepy.boundary.Boundary(subdomain, )
+
 
     def __init__(self, input_file: str, 
                  field_array : list, 

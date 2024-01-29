@@ -2,8 +2,10 @@ import subprocess
 
 import meshio
 
-import fepy.space
 import fepy.element
+import fepy.node
+import fepy.space
+
 
 
 class FemData:
@@ -159,9 +161,11 @@ def gmshParser(input_file):
     # return
     return FemData(nodes, elements, domains)
     
-def elementParser(element_type: str, space: fepy.space.Space):
+def elementParser(element_type: str, space = fepy.space.Lagrangian):
 
     match element_type:
+            case 'vertex':
+                return fepy.node.Node
             case 'line':                 
                 if space.fetype == fepy.space.Lagrangian:
                     return fepy.element.E1L1
