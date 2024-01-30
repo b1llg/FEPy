@@ -4,6 +4,7 @@ This module is for boundary conditons
 import fepy.element
 import fepy.io
 import fepy.node
+import fepy.space
 
 class Boundary:
     """
@@ -11,6 +12,6 @@ class Boundary:
 
     Each enty has a name and corresponding element
     """
-    def __init__(self, name : str, elements: dict):
+    def __init__(self, name : str, elements: dict, space : fepy.space.Space):
         self.name = name
-        self.elements = elementparser
+        self.elements = fepy.io.elementParser(name, space)
