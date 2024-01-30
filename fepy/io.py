@@ -98,7 +98,7 @@ def gmshParser(input_file):
         # of possible data in each type of cells
         match cells.type:
             case 'vertex':
-                [vertex.append(arr) for arr in cells.data]
+                [vertex.append(arr) for arr in cells.data[0]]
 
             case 'line':                 
                 [line.append(arr) for arr in cells.data]
@@ -154,9 +154,22 @@ def gmshParser(input_file):
 
     # Extract domain data
     domains = dict()
-    for subdomain in mesh.cell_sets_dict.keys():
+
+    for subdomain, subdomain_content in mesh.cell_sets_dict.items():
         if (subdomain not in domains) and ("gmsh" not in subdomain):
-            domains[subdomain] = mesh.cell_sets_dict[subdomain]
+            # Create a dictionnary entry for each element type in a boundary
+            # get element type
+            
+            for eltype, items in subdomain_content.items():
+                # get item id reference in element list
+                els = []
+                [els.append(it) for it in items]
+
+
+                domains[subdomain] = {eltype : els}
+
+
+            
 
     # return
     return FemData(nodes, elements, domains)

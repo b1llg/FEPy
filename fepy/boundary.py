@@ -12,6 +12,7 @@ class Boundary:
 
     Each enty has a name and corresponding element
     """
-    def __init__(self, name : str, elements: dict, space : fepy.space.Space):
+    def __init__(self, name: str, elements: dict):
         self.name = name
-        self.elements = fepy.io.elementParser(name, space)
+        self.elements = elements
+        self.is_initialized = False # this value changes when the boundary is assigned 

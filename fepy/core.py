@@ -24,17 +24,39 @@ class Field:
         """
         parsed_element = []
         
-        for element_type in fem_data.elements.keys():
+        for element_type, element_content in fem_data.elements.items():
 
-            # Dont consider vertex because they are not element types, exclude element types that are empty
-            if  not element_type == "vertex" and len(fem_data.elements[element_type]) > 0:
+            # exclude element types that are empty
+            if  len(element_content) > 0:
 
-                # get the type of space function
-                func_type = fepy.io.elementParser(element_type, space)
+                # for each element of the current type, use class_init which calls the
+                # good initializer for the current type -> fepy.element
+                # special case for vertex 
+                if element_type == 'vertex':
+                    for node in element_content:
+                        parsed_element.append(fepy.node.Node(fem_data.nodes[node][0],
+                                                             fem_data.nodes[node][1],
+                                                             fem_data.nodes[node][2]))
+                else:
+                    """
+                    ***************************************************
+                    ***************************************************
+                    ***************************************************
 
-                # for each element of the current type, create an object of the class func_type -> fepy.element
-                for nodes in fem_data.elements[element_type]:
-                    parsed_element.append(func_type(nodes))
+                    Try a way with gmsh data to decouple bcs data and 
+                    plain volume data. Because things are going to get 
+                    parsed multiple times
+
+                    ***************************************************
+                    ***************************************************
+                    ***************************************************
+
+                    """
+                    # get the type of space function
+                    class_init = fepy.io.elementParser(element_type, space)
+
+                    for nodes in element_content:
+                        parsed_element.append(class_init(nodes))
         
         self.elements = np.array(parsed_element) #create array of elements for the field
 
@@ -74,48 +96,19 @@ class Model:
         # Set the domains, for now simply takes the data from fem_data
         self.domains = fem_data.domains
 
-        # set the total numbe of dofs
+        # set the total number of dofs
         self.dofpn = 0
         for field in  self.fields:
                 self.dofpn += len(field.components)
 
         self.tdof = len(self.nodes) * self.dofpn
-    
-    def set_domains(self,
-                   fem_data: fepy.io.FemData,
-                   field_array: list, 
-                   space_array: list):
+
+    def set_domains(self, fem_data : fepy.io.FemData):
         """
-        Function that defines domain for the problem
+        Add boundaries to the model, not itialized yet
         """
-        self.domains = dict
-
-        for subdomain in fem_data.domains:
-
-            # Access boundary data
-            eltype = list(fem_data.domains[subdomain].keys())[0] # vertex, line, quad, etc
-            
-            items = []   # initialize a item container
-            
-            # retrieve element definition
-            for el_item in list(fem_data.domains[subdomain].values())[0]:
-                items.append(el_item)
-
-            if eltype == 'vertex':
-                # Means that each entry in item is a node, can be parsed as is
-                nodes = []
-                for it in items:
-
-                    nodes.append(fepy.node.Node(fem_data.nodes[it][0],      # x
-                                                fem_data.nodes[it][1],      # y
-                                                fem_data.nodes[it][2]))     # z
-                
-            else:
-                # retrieve FEPy type
-                eltype_init = fepy.io.elementParser(eltype)
-
-
-            self.domains[subdomain] = fepy.boundary.Boundary(subdomain, )
+        for domain, els in fem_data.domains.items():
+            self.domains.append(fepy.boundary.Boundary(domain, els))
 
     def __init__(self, input_file: str, 
                  field_array : list, 
@@ -149,8 +142,9 @@ class Model:
         # Now that the data is parsed, each field should have its own element data
         self.set_fields(fem_data, field_array, space_array)
 
-        # Sets domain
-        self.set_domains(fem_data, field_array, space_array)
+        # initialize domains
+        self.domains = []
+        self.set_domains(fem_data)
      
     def set_essentials(self, essential_bcs : list):
         """
