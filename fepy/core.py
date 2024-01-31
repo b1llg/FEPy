@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-import fepy.boundary
+import fepy.domain
 import fepy.io
 import fepy.node
 import fepy.space 
@@ -13,6 +13,12 @@ class Field:
     """
     A FEM function is either a trial or test function 
     """
+    def add_domain(self,domain: fepy.domain.Domain):
+        self.domains[domain] = fepy.domain.Domain()
+
+    def add_boundary(self, boundary : str):
+        self.boundaries[boundary] = fepy.domain.Boundary()
+
     def set_element(self,fem_data: fepy.io.FemData, space: fepy.space.Space):
         """
         Convert the basic raw data to the correct element formulation
@@ -60,9 +66,17 @@ class Field:
         
         self.elements = np.array(parsed_element) #create array of elements for the field
 
+    def set_boundaries(self, fem_data: fepy.io.FemData, space: fepy.space.Space):
+        pass
+
     def __init__(self, name : str, components: list):
         self.name = name
         self.components = components
+        
+        # initialize list of domains and bondaries
+        self.domains = dict()
+        self.boundaries = dict()
+    
 
 class Model:
     """
@@ -90,25 +104,30 @@ class Model:
 
             # Call set element function
             field.set_element(fem_data, space)
+            field.set_boundaries(fem_data, space)
+          
+            """
+            *****************
+            *****************
+            Find where elements are added in field and make sure they are
+            added to their respective domain instead. It will save space and
+            time
+            *****************
+            *****************
+            """
 
         self.fields = field_array # assign fields to model
 
-        # Set the domains, for now simply takes the data from fem_data
-        self.domains = fem_data.domains
+            # call set_domains
+
 
         # set the total number of dofs
-        self.dofpn = 0
+        self.dofpn = 0 # initialize dof per node
         for field in  self.fields:
                 self.dofpn += len(field.components)
 
         self.tdof = len(self.nodes) * self.dofpn
 
-    def set_domains(self, fem_data : fepy.io.FemData):
-        """
-        Add boundaries to the model, not itialized yet
-        """
-        for domain, els in fem_data.domains.items():
-            self.domains.append(fepy.boundary.Boundary(domain, els))
 
     def __init__(self, input_file: str, 
                  field_array : list, 
@@ -135,16 +154,11 @@ class Model:
         # get raw data from input file
         fem_data = fepy.io.inputReader(mesh_file) 
 
-
         # assign node
         self.nodes = fem_data.nodes
 
         # Now that the data is parsed, each field should have its own element data
         self.set_fields(fem_data, field_array, space_array)
-
-        # initialize domains
-        self.domains = []
-        self.set_domains(fem_data)
      
     def set_essentials(self, essential_bcs : list):
         """
