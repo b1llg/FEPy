@@ -19,55 +19,22 @@ class Field:
     def add_boundary(self, boundary : str):
         self.boundaries[boundary] = fepy.domain.Boundary()
 
-    def set_element(self,fem_data: fepy.io.FemData, space: fepy.space.Space):
+    def set_domain(self, fem_data: fepy.io.FemData, space: fepy.space.Space):
         """
-        Convert the basic raw data to the correct element formulation
-        depending on the function space provied
-
-        fem_data: raw fem_data extracted from the generated mesh file
-
-        sapce: function space associated to the current field behind builded
+        Add domain definition. Loop over fem_data and check domains defined in file and add them to their respective field
         """
-        parsed_element = []
-        
-        for element_type, element_content in fem_data.elements.items():
-
-            # exclude element types that are empty
-            if  len(element_content) > 0:
-
-                # for each element of the current type, use class_init which calls the
-                # good initializer for the current type -> fepy.element
-                # special case for vertex 
-                if element_type == 'vertex':
-                    for node in element_content:
-                        parsed_element.append(fepy.node.Node(fem_data.nodes[node][0],
-                                                             fem_data.nodes[node][1],
-                                                             fem_data.nodes[node][2]))
-                else:
-                    """
-                    ***************************************************
-                    ***************************************************
-                    ***************************************************
-
-                    Try a way with gmsh data to decouple bcs data and 
-                    plain volume data. Because things are going to get 
-                    parsed multiple times
-
-                    ***************************************************
-                    ***************************************************
-                    ***************************************************
-
-                    """
-                    # get the type of space function
-                    class_init = fepy.io.elementParser(element_type, space)
-
-                    for nodes in element_content:
-                        parsed_element.append(class_init(nodes))
-        
-        self.elements = np.array(parsed_element) #create array of elements for the field
+        for domain in self.domains:
+            for fd_domain in fem_data.domains:
+                if fd_domain == domain:
+                    self.domains[domain] = fem_data.domains[domain]
 
     def set_boundaries(self, fem_data: fepy.io.FemData, space: fepy.space.Space):
-        pass
+        """
+        Add boundary definition. Loop over fem_data and check boundaries defined in file and add them
+        to their respective boundary in field obejct
+        """
+        for domain in fem_data.domains:
+            pass
 
     def __init__(self, name : str, components: list):
         self.name = name
@@ -102,20 +69,10 @@ class Model:
         # Set the fields
         for field, space in zip(field_array, space_array):
 
-            # Call set element function
-            field.set_element(fem_data, space)
+            # Call set functions
+            field.set_domain(fem_data, space)
             field.set_boundaries(fem_data, space)
-          
-            """
-            *****************
-            *****************
-            Find where elements are added in field and make sure they are
-            added to their respective domain instead. It will save space and
-            time
-            *****************
-            *****************
-            """
-
+            
         self.fields = field_array # assign fields to model
 
             # call set_domains
@@ -159,7 +116,40 @@ class Model:
 
         # Now that the data is parsed, each field should have its own element data
         self.set_fields(fem_data, field_array, space_array)
-     
+        
+    def set_element(fem_data: fepy.io.FemData, space: fepy.space.Space):
+        """
+        Convert the basic raw data to the correct element formulation
+        depending on the function space provied
+
+        fem_data: raw fem_data extracted from the generated mesh file
+
+        sapce: function space associated to the current field behind builded
+        """
+        parsed_element = []
+        
+        for element_type, element_content in fem_data.elements.items():
+
+            # exclude element types that are empty
+            if  len(element_content) > 0:
+
+                # for each element of the current type, use class_init which calls the
+                # good initializer for the current type -> fepy.element
+                # special case for vertex 
+                if element_type == 'vertex':
+                    for node in element_content:
+                        parsed_element.append(fepy.node.Node(fem_data.nodes[node][0],
+                                                             fem_data.nodes[node][1],
+                                                             fem_data.nodes[node][2]))
+                else:
+                    # get the type of space function
+                    class_init = fepy.io.elementParser(element_type, space)
+
+                    for nodes in element_content:
+                        parsed_element.append(class_init(nodes))
+        
+        return np.array(parsed_element) #create array of elements
+    
     def set_essentials(self, essential_bcs : list):
         """
         This functions sets the essentials conditons to build the problem
@@ -167,7 +157,6 @@ class Model:
         # Initialize the numer array
         for bc in essential_bcs:
             pass
-
 
 def main():
     pass
