@@ -3,7 +3,8 @@ import os
 import numpy as np
 
 from fepy.domain import Boundary, Domain
-from fepy.core import Field, Model
+from fepy.field import Field
+from fepy.model import Model
 from fepy.space import Space, Lagrangian
 
 

@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from fepy.core import Field, Model
+from fepy.field import Field, Model
 from fepy.space import Space, Lagrangian
 
 def main():
