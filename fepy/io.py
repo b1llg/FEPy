@@ -1,6 +1,7 @@
 import subprocess
 
 import meshio
+import numpy as np 
 
 import fepy.element
 import fepy.node
@@ -47,7 +48,7 @@ def meshGen(input_file: str, order: int):
     except:
         raise SystemError("Error while generating mesh")
 
-def inputReader(input_file):
+def inputReader(input_file: str): 
      """
      Call the appropriate appropriate reader depending on the file format
      """
@@ -60,7 +61,7 @@ def inputReader(input_file):
      else:
          raise ValueError("Unssuported: '.{0}' file format. For now only '.gmsh' format is supported")
 
-def gmshParser(input_file):
+def gmshParser(input_file : str):
     """
     Parse gmsh file format input files to generate fe data. 
     """
@@ -72,25 +73,11 @@ def gmshParser(input_file):
 
     # Generate node data from meshio object
     for node in mesh.points:
-        nodes.append([node[0], node[1], node[2]])
+        nodes.append(fepy.node.Node(node[0], node[1], node[2]))
 
-    # Retrieve element data
-    vertex = []
 
-    line = []
-    line3 = []
-    line4 = []
-
-    triangle = []
-    triangle6 = []
-    triangle10 = []
-
-    quad = []
-    quad9 = []
-    quad16 = []
-
-    #3d elements
-
+    # Element list
+    elements = []
 
     for cells in mesh.cells:
 
@@ -98,34 +85,25 @@ def gmshParser(input_file):
         # of possible data in each type of cells
         match cells.type:
             case 'vertex':
-                [vertex.append(arr) for arr in cells.data[0]]
+                elements.append(fepy.element.Vertex(arr) for arr in cells.data[0])
 
             case 'line':                 
-                [line.append(arr) for arr in cells.data]
+                elements.append(fepy.element.Line(arr) for arr in cells.data)
 
             case 'line3':
-                [line3.append(arr) for arr in cells.data]
-
-            case 'line4':
-                [line4.append(arr) for arr in cells.data]
+                elements.append(fepy.element.Line3(arr) for arr in cells.data)
 
             case 'triangle':
-                [triangle.append(arr) for arr in cells.data]
+                elements.append(fepy.element.Triangle(arr) for arr in cells.data)
 
             case 'triangle6':
-                [triangle6.append(arr) for arr in cells.data]
-
-            case 'triangle10':
-                [triangle10.append(arr) for arr in cells.data]
+                elements.append(fepy.element.Triangle6(arr) for arr in cells.data)
 
             case 'quad':
-                [quad.append(arr) for arr in cells.data]
+                elements.append(fepy.element.Quad(arr) for arr in cells.data)
 
             case 'quad9':
-                [quad9.append(arr) for arr in cells.data]
-
-            case 'quad16':
-                [quad16.append(arr) for arr in cells.data]
+                elements.append(fepy.element.Quad9(arr) for arr in cells.data)
             
             case _:
                 raise ValueError("cell type {0} invalid, check geo file for possible error leading to a error in .msh file". format(cells.type))
@@ -133,26 +111,9 @@ def gmshParser(input_file):
 
             # to do : 3d elements
 
-    # Create element dict
-    elements = dict()
 
-    elements["vertex"] = vertex
 
-    elements["line"] = line
-    elements["line3"] = line3
-    elements["line4"] = line4
-
-    elements["triangle"] = triangle
-    elements["triangle6"] = triangle6
-    elements["triangle10"] = triangle10
-
-    elements["quad"] = quad
-    elements["quad9"] = quad9
-    elements["quad16"] = quad16
-
-    # 3d
-
-    # Extract domain data
+            # Extract domain data
     domains = dict()
 
     for subdomain, subdomain_content in mesh.cell_sets_dict.items():
@@ -167,8 +128,6 @@ def gmshParser(input_file):
 
 
                 domains[subdomain] = {eltype : els}
-
-
             
 
     # return

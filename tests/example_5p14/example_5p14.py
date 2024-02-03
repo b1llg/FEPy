@@ -13,7 +13,6 @@ def main():
     """
     Test a basic case of a loaded cable. From [Les éléments finis de la théorie à la pratique]()
     """
-
     # # Create a 1d displacement field and its test function
     disp = Field("displacement",["u"])
 

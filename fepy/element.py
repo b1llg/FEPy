@@ -4,11 +4,76 @@ import numpy as np
 import fepy.node
 
 
-class Element(ABC):
+class AbstractElement(ABC):
+    """
+    Base class for element definition
+    """
+    @abstractmethod
     def __init__(self, nodes: np.ndarray):
         self.nodes = self.checkNodes(nodes)
-        self.nnodes = self.nodes.size
-        
+    
+
+class GeometricElement(AbstractElement):
+    """
+    Below are all geometric elements, they contaisn all the geometric data of the
+    element and they are all model dependant.
+    """
+
+    
+
+class Vertex(GeometricElement):
+    """
+    Class to define nodes as element
+    """
+
+###
+# 
+#       1D Elements
+#   
+###
+class Line(GeometricElement):
+    """
+    Class for 2 node line element (1d)
+    """
+
+
+class Line3(GeometricElement):
+    """
+    Class for 3 node line element
+    """
+
+###
+# 
+#       2D Elements
+#   
+###
+
+class Triangle(GeometricElement):
+    pass
+
+class Triangle6(GeometricElement):
+    pass
+
+class Quad(GeometricElement):
+    pass
+
+class Quad9(GeometricElement):
+    pass
+
+###
+# 
+#       3D Elements
+#   
+###
+
+
+
+
+class FieldElement(AbstractElement):
+    """
+    Below are all space depent elements, they rely on fields. They retrieve geometric data from the geometric element
+    in the model
+    """
     @property
     @abstractmethod
     def ndof():
@@ -22,11 +87,7 @@ class Element(ABC):
     def B(self ,gp: np.ndarray):
         pass
 
-    @abstractmethod
-    def checkNodes(self, nodes):
-        pass
-
-class E1L1(Element):
+class E1L1(FieldElement):
     """
     1d Lagrange 1st order element
     """
@@ -50,7 +111,7 @@ class E1L1(Element):
     
     
     
-class E1L2(Element):
+class E1L2(FieldElement):
     """
     1d Lagrange 2nd order element
     """
@@ -85,21 +146,19 @@ class E1L2(Element):
         elif nodes.size != 3:
             raise ValueError("E1QUD requires 3 nodes, {0} nodes has been passed".format(nodes.size))
         return nodes
-    
+   
 
 def main():
     # Create an E1LIN
-    n1 = fepy.Node(0,0,0)
-    n2 = fepy.Node(1,0,0)
-    n3 = fepy.Node(0.5,0,0)
+    n1 = fepy.node.Node(0,0,0)
+    n2 = fepy.node.Node(1,0,0)
+    n3 = fepy.node.Node(0.5,0,0)
 
 
     print("E1L1: ")
     e1 = E1L1(np.array([n1,n2]))
 
     print("ndof: ",e1.ndof)
-
-    print("Connectivity: ", e1.connectivity)
 
     print("nnodes: ",e1.nnodes)
 
@@ -108,7 +167,7 @@ def main():
     print("\n")
 
     print("E1L3: ")
-    e2 = E1L1(2, np.array([n1,n2,n3]))
+    e2 = E1L1(np.array([n1,n2,n3]))
 
     print("ndof: ",e2.ndof)
 
