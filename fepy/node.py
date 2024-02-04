@@ -1,5 +1,7 @@
+import numpy as np
+
 class Node:
-    def __init__(self, x:int, y:int, z:int):
-        self.x = x
-        self.y = y
-        self.z = z
+    def __init__(self, coord):
+        self.x = coord[0]
+        self.y = coord[1]
+        self.z = coord[2]

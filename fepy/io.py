@@ -73,44 +73,17 @@ def gmshParser(input_file : str):
 
     # Generate node data from meshio object
     for node in mesh.points:
-        nodes.append(fepy.node.Node(node[0], node[1], node[2]))
+        nodes.append(node)
 
+    """
+    **********************************
+    Parse elements
 
-    # Element list
+    cell_sets refer to the element id from a certain type
+    **********************************
+    """
+
     elements = []
-
-    for cells in mesh.cells:
-
-        # since arrays are inside arrays. Must use a list comprehension to extract all levels
-        # of possible data in each type of cells
-        match cells.type:
-            case 'vertex':
-                elements.append(fepy.element.Vertex(arr) for arr in cells.data[0])
-
-            case 'line':                 
-                elements.append(fepy.element.Line(arr) for arr in cells.data)
-
-            case 'line3':
-                elements.append(fepy.element.Line3(arr) for arr in cells.data)
-
-            case 'triangle':
-                elements.append(fepy.element.Triangle(arr) for arr in cells.data)
-
-            case 'triangle6':
-                elements.append(fepy.element.Triangle6(arr) for arr in cells.data)
-
-            case 'quad':
-                elements.append(fepy.element.Quad(arr) for arr in cells.data)
-
-            case 'quad9':
-                elements.append(fepy.element.Quad9(arr) for arr in cells.data)
-            
-            case _:
-                raise ValueError("cell type {0} invalid, check geo file for possible error leading to a error in .msh file". format(cells.type))
-
-
-            # to do : 3d elements
-
 
 
             # Extract domain data
@@ -129,8 +102,10 @@ def gmshParser(input_file : str):
 
                 domains[subdomain] = {eltype : els}
             
+    # parse elements as geometric entities
+    
 
-    # return
+    # return          
     return FemData(nodes, elements, domains)
     
 def elementParser(element_type: str, space = fepy.space.Lagrangian):
