@@ -75,31 +75,38 @@ def gmshParser(input_file : str):
     for node in mesh.points:
         nodes.append(node)
 
+    # Retrieve element data
+    raw_elements = dict()
+    # 0d element
+    raw_elements['vertex'] = []
 
-    # Access the elements and their connectivity
-    for cell_block in mesh.cells:
-        cell_type = cell_block.type
-        connectivity = cell_block.data
-        print(f"Element type: {cell_type}")
-        print("Connectivity:")
-        for cell in connectivity:
-            print(cell)
-    """
-    **********************************
-    Parse elements
+    # 1d elements
+    raw_elements['line'] = []
+    raw_elements['line3'] = []
 
-    cell_sets refer to the element id from a certain type
-    
-    mesh.cell_sets_dict['loaded_section_const'] ->    {'line3': array([1, 2, 3], dtype=uint64)}
+    # 2d elements
 
-    mesh.cells_dict['line3'][1] -> array([1, 5, 6])
-    **********************************
-    """
-
-    elements = []
+    # 3d elements
 
 
-            # Extract domain data
+    for cells in mesh.cells:
+
+        # since arrays are inside arrays. Must use a list comprehension to extract all levels
+        # of possible data in each type of cells
+        match cells.type:
+            case 'vertex':
+                [raw_elements['vertex'].append(arr) for arr in cells.data[0]]
+
+            case 'line':                 
+                [raw_elements['line'].append(arr) for arr in cells.data]
+
+            case 'line3':
+                [raw_elements['line3'].append(arr) for arr in cells.data]
+           
+            case _:
+                raise ValueError("cell type {0} invalid, check geo file for possible error leading to a error in .msh file". format(cells.type))
+  
+    # Extract domain data
     domains = dict()
 
     for subdomain, subdomain_content in mesh.cell_sets_dict.items():
@@ -116,9 +123,43 @@ def gmshParser(input_file : str):
                 domains[subdomain] = {eltype : els}
             
     # parse elements as geometric entities
-    
+    """
+    **********************************
+    Parse elements
 
-    # return          
+    cell_sets refer to the element id from a certain type
+    
+    mesh.cell_sets_dict['loaded_section_const'] ->    {'line3': array([1, 2, 3], dtype=uint64)}
+
+    mesh.cells_dict['line3'][1] -> array([1, 5, 6])
+    **********************************
+    """
+    print("Nodes content: ")
+    print("====================================")
+    for node in nodes:
+        print("\t" + str(node))
+
+    print("Element content: ")
+    print("====================================")
+    for eltype, elcont in  raw_elements.items():
+        print(eltype)
+
+        for item in elcont:
+            print("\t" + str(item))
+
+    print("Domain content: ")
+    print("====================================")
+    for domain, domain_content in domains.items():
+        print(domain)
+        
+        for eltype, elcont in domain_content.items():
+            print("\t" + str(eltype))
+            print("\t\t" + str(elcont))
+   
+
+
+    # return    
+    elements = []      
     return FemData(nodes, elements, domains)
     
 def elementParser(element_type: str, space = fepy.space.Lagrangian):

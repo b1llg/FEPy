@@ -8,9 +8,13 @@ class AbstractElement(ABC):
     """
     Base class for element definition
     """
-    @abstractmethod
     def __init__(self, nodes: np.ndarray):
         self.nodes = self.checkNodes(nodes)
+    
+    @property
+    @abstractmethod
+    def ndof():
+        pass
     
 
 class GeometricElement(AbstractElement):
@@ -74,11 +78,6 @@ class FieldElement(AbstractElement):
     Below are all space depent elements, they rely on fields. They retrieve geometric data from the geometric element
     in the model
     """
-    @property
-    @abstractmethod
-    def ndof():
-        pass
-
     @abstractmethod
     def N(self, gp: np.ndarray):
         pass
