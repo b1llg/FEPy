@@ -75,11 +75,24 @@ def gmshParser(input_file : str):
     for node in mesh.points:
         nodes.append(node)
 
+
+    # Access the elements and their connectivity
+    for cell_block in mesh.cells:
+        cell_type = cell_block.type
+        connectivity = cell_block.data
+        print(f"Element type: {cell_type}")
+        print("Connectivity:")
+        for cell in connectivity:
+            print(cell)
     """
     **********************************
     Parse elements
 
     cell_sets refer to the element id from a certain type
+    
+    mesh.cell_sets_dict['loaded_section_const'] ->    {'line3': array([1, 2, 3], dtype=uint64)}
+
+    mesh.cells_dict['line3'][1] -> array([1, 5, 6])
     **********************************
     """
 
