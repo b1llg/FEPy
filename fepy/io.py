@@ -121,6 +121,8 @@ def gmshParser(input_file : str):
 
 
                 domains[subdomain] = {eltype : els}
+
+    # Update 
             
     # parse elements as geometric entities
     """
@@ -160,6 +162,7 @@ def gmshParser(input_file : str):
 
     # return    
     elements = []      
+
     return FemData(nodes, elements, domains)
     
 def elementParser(element_type: str, space = fepy.space.Lagrangian):
