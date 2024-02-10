@@ -13,8 +13,23 @@ class AbstractElement(ABC):
 
     @property
     @abstractmethod
+    def dim():
+        pass
+
+    @property
+    @abstractmethod
     def nnodes(self):
         pass
+
+    def checkNodes(self, nodes: np.array) -> np.ndarray:
+        if not isinstance(nodes, np.ndarray):
+            raise TypeError("Nodes should be of type np.array: {0} is beeing used".format(str(type(nodes))))
+        elif nodes.size != self.nnodes:
+            raise ValueError("Element of type {0} requires {1} nodes, {2} nodes has been passed".format(
+                self.__class__,
+                self.nnodes,
+                nodes.size))
+        return nodes
     
 
 class GeometricElement(AbstractElement):
@@ -22,10 +37,7 @@ class GeometricElement(AbstractElement):
     Below are all geometric elements, they contaisn all the geometric data of the
     element and they are all model dependant.
     """
-    @property
-    @abstractmethod
-    def dim():
-        pass
+
 
     
 
@@ -33,18 +45,13 @@ class Vertex(GeometricElement):
     """
     Class to define nodes as element
     """
-    def dim():
+    @property
+    def dim(self):
         return 0
     
+    @property
     def nnodes(self):
         return 1
-
-    def checkNodes(self, nodes: np.array) -> np.ndarray:
-        if not isinstance(nodes, np.ndarray):
-            raise TypeError("Nodes should be of type np.array: {0} is beeing used".format(str(type(nodes))))
-        elif nodes.size != 1:
-            raise ValueError("Vertex requires 1 node, {0} nodes has been passed".format(nodes.size))
-        return nodes
 
 ###
 # 
@@ -55,7 +62,8 @@ class Line(GeometricElement):
     """
     Class for 2 node line element (1d)
     """
-    def dim():
+    @property
+    def dim(self):
         return 1
     
     @property
@@ -67,7 +75,8 @@ class Line3(GeometricElement):
     """
     Class for 3 node line element
     """
-    def dim():
+    @property
+    def dim(self):
         return 1
     
     @property
@@ -123,6 +132,9 @@ class E1L1(FieldElement):
     """
     1d Lagrange 1st order element
     """
+    @property
+    def dim(self):
+        return 1
 
     @property
     def ndof(self):
@@ -137,20 +149,16 @@ class E1L1(FieldElement):
     
     def B(self, gp: np.ndarray):
         return np.array([1, -1])
-    
-    def checkNodes(self, nodes: np.array) -> np.ndarray:
-        if not isinstance(nodes, np.ndarray):
-            raise TypeError("Nodes should be of type np.array: {0} is beeing used".format(str(type(nodes))))
-        elif nodes.size != 2:
-            raise ValueError("E1L1 requires 2 nodes, {0} nodes has been passed".format(nodes.size))
-        return nodes
-    
+        
     
     
 class E1L2(FieldElement):
     """
     1d Lagrange 2nd order element
     """
+    @property
+    def dim(self):
+        return 1
 
     @property
     def ndof(self):
@@ -169,14 +177,7 @@ class E1L2(FieldElement):
         return 0.5*np.array(-1 + 2*gp[0],
                             -4*gp[0],
                             1 + 2*gp[0])
-    
-    def checkNodes(self, nodes: np.array) -> np.ndarray:
-        if not isinstance(nodes, np.ndarray):
-            raise TypeError("Nodes should be of type np.array: {0} is beeing used".format(str(type(nodes))))
-        elif nodes.size != 3:
-            raise ValueError("E1L2 requires 3 nodes, {0} nodes has been passed".format(nodes.size))
-        return nodes
-   
+       
 
 def main():
     # Create an E1LIN
@@ -188,7 +189,7 @@ def main():
     print("E1L1: ")
     e1 = E1L1(np.array([n1,n2]))
 
-    print("ndof: ",e1.ndof)
+    print("ndof: ", e1.ndof)
     print("nnodes: ", e1.nnodes)
 
 

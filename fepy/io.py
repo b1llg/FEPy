@@ -89,20 +89,20 @@ def gmshParser(input_file : str):
     # 3d elements
 
 
+    elements = []
     for cells in mesh.cells:
 
         # since arrays are inside arrays. Must use a list comprehension to extract all levels
         # of possible data in each type of cells
         match cells.type:
             case 'vertex':
-                [raw_elements['vertex'].append(arr) for arr in cells.data[0]]
+                [elements.append(fepy.element.Vertex(arr)) for arr in cells.data]
 
             case 'line':                 
-                [raw_elements['line'].append(arr) for arr in cells.data]
+                [elements.append(fepy.element.Line(arr)) for arr in cells.data]
 
             case 'line3':
-                [raw_elements['line3'].append(arr) for arr in cells.data]
-           
+                [elements.append(fepy.element.Line3(arr)) for arr in cells.data]
             case _:
                 raise ValueError("cell type {0} invalid, check geo file for possible error leading to a error in .msh file". format(cells.type))
   
@@ -157,11 +157,6 @@ def gmshParser(input_file : str):
         for eltype, elcont in domain_content.items():
             print("\t" + str(eltype))
             print("\t\t" + str(elcont))
-   
-
-
-    # return    
-    elements = []      
 
     return FemData(nodes, elements, domains)
     
