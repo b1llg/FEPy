@@ -8,7 +8,8 @@ class AbstractElement(ABC):
     """
     Base class for element definition
     """
-    def __init__(self, nodes: np.ndarray):
+    def __init__(self, id : int , nodes: np.ndarray):
+        self.id = id
         self.nodes = self.checkNodes(nodes)
 
     @property
@@ -115,6 +116,7 @@ class FieldElement(AbstractElement):
     Below are all space depent elements, they rely on fields. They retrieve geometric data from the geometric element
     in the model
     """
+    
     @property
     @abstractmethod
     def ndof():
@@ -187,7 +189,7 @@ def main():
 
 
     print("E1L1: ")
-    e1 = E1L1(np.array([n1,n2]))
+    e1 = E1L1(1, np.array([n1,n2]))
 
     print("ndof: ", e1.ndof)
     print("nnodes: ", e1.nnodes)
@@ -198,7 +200,7 @@ def main():
     # print("\n")
 
     print("E1L2: ")
-    e2 = E1L2(np.array([n1,n2,n3]))
+    e2 = E1L2(2, np.array([n1,n2,n3]))
 
     # print("ndof: ",e2.ndof)
 
@@ -209,7 +211,7 @@ def main():
     print("Geomtric element: ")
     print("Vertex:")
 
-    e3 = Vertex(np.array([n1]))
+    e3 = Vertex(3, np.array([n1]))
 
     print("test")
 

@@ -90,19 +90,30 @@ def gmshParser(input_file : str):
 
 
     elements = []
+    id = 1 # Initialize element id value
     for cells in mesh.cells:
 
-        # since arrays are inside arrays. Must use a list comprehension to extract all levels
-        # of possible data in each type of cells
+        # Add parsed geometric element to element list, refers id to mesh.cells to be
+        # mapped to boundary element latter
         match cells.type:
             case 'vertex':
-                [elements.append(fepy.element.Vertex(arr)) for arr in cells.data]
+                for arr in cells.data:
+                    elements.append(fepy.element.Vertex(id, arr))   
+                    cells.id = id
+                    id += 1
 
-            case 'line':                 
-                [elements.append(fepy.element.Line(arr)) for arr in cells.data]
+            case 'line':          
+                for arr in cells.data:       
+                    elements.append(fepy.element.Line(id, arr))
+                    cells.id = id
+                    id += 1 
 
             case 'line3':
-                [elements.append(fepy.element.Line3(arr)) for arr in cells.data]
+                for arr in cells.data:
+                    elements.append(fepy.element.Line3(id, arr))
+                    cells.id = id
+                    id += 1
+
             case _:
                 raise ValueError("cell type {0} invalid, check geo file for possible error leading to a error in .msh file". format(cells.type))
   
