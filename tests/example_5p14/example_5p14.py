@@ -38,7 +38,7 @@ def main():
     model = Model(path ,[disp], [s_uw])
    
     # Set essential boundary
-    model.set_essentials(['bc_fix'])
+    # model.set_essentials(['bc_fix'])
 
 
 if __name__ == "__main__":

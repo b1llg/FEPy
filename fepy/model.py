@@ -38,6 +38,11 @@ class Model:
         self.nodes = fem_data.nodes
         self.elements = fem_data.elements
 
+
+        self.set_fields(fem_data, )
+
+        print("test")
+
     def set_fields(self,
                    fem_data: fepy.io.FemData,
                    field_array: list, 
