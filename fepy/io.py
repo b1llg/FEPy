@@ -73,7 +73,7 @@ def gmshParser(input_file : str):
 
     # Generate node data from meshio object
     for node in mesh.points:
-        nodes.append(node)
+        nodes.append(fepy.node.Node(node))
 
     # Retrieve element data
     elements = dict()

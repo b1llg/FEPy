@@ -5,3 +5,6 @@ class Node:
         self.x = coord[0]
         self.y = coord[1]
         self.z = coord[2]
+    
+    def set_dof(self):
+        pass

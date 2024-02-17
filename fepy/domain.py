@@ -12,7 +12,17 @@ class Domain:
     build the problem
     """
     def __init__(self):
-        self.is_initialized = False # this value changes when the boundary is assigned 
+        self.is_initialized = False # this value changes when the boundary is assigned
+        self.elements = dict()
+
+    def add_elements(self, element_data):
+        """
+        Called from field, add element type and elements to the domain
+        """
+        for eltype, elements in element_data.items():
+            self.elements[eltype] = elements
+        
+        self.is_initialized = True
     
 
 class Boundary(Domain):

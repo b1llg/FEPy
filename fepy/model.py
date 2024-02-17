@@ -38,9 +38,18 @@ class Model:
         self.nodes = fem_data.nodes
         self.elements = fem_data.elements
 
+        self.set_fields(fem_data, field_array, space_array)
 
-        self.set_fields(fem_data, )
+        # Build the "numer" table -> Table containing the links between each node and each dof
+        self.set_numer()
 
+        print("test")
+
+    def set_numer(self):
+        """
+        This function goes through the list of bcs and set the dof number to each node
+        """
+        # First we need to know what type of elements that used.
         print("test")
 
     def set_fields(self,
@@ -48,21 +57,12 @@ class Model:
                    field_array: list, 
                    space_array: list):
         """
-        This functions parses the femdata and create element data for each fields and
-        parses the domain and add the correct domains to the correct type:
-            vertex
-            line
-            surface
-            specific volume
-
-        also adds the correct element to the correct boundary
+        This functions assign elements to fields and their corresponding boundary
         """
         # Set the fields
         for field, space in zip(field_array, space_array):
-
             # Call set functions
             field.set_domains(fem_data, space)
-            field.set_boundaries(fem_data, space)
             
         self.fields = field_array # assign fields to model
 

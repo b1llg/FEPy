@@ -21,9 +21,11 @@ def main():
     disp.add_domain('volume')
 
     disp.add_boundary('bc_fix')
-    disp.add_boundary('loded_section')
+    disp.add_boundary('loaded_section_ramp')
     disp.add_boundary('load_point')
     disp.add_boundary('loaded_section_const')
+
+    disp.set_essentials(['bc_fix'])
 
     # Initialize function of type Lagrangian order 2 to solve the problem.
     # The problem is still in H1 but we use H2 functions.
@@ -36,7 +38,16 @@ def main():
 
     # Now from the model we have the essential data: elements, nodes and fields
     model = Model(path ,[disp], [s_uw])
+
+    """
+    ************************
+    Find a way to build set numer, loop over volume element and determine the numbers of dofs.
+        
+    If there is multiple fields, find a way to generate more dofs
+    """
    
+
+    print("test")
     # Set essential boundary
     # model.set_essentials(['bc_fix'])
 
