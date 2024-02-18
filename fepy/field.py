@@ -27,6 +27,7 @@ class Field:
 
     def __init__(self, name : str, components: list):
         self.name = name
+        self.dofpn = len(components)
         self.components = components
         
         # initialize list of domains and bondaries

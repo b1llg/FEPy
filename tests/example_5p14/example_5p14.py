@@ -15,6 +15,7 @@ def main():
     """
     # # Create a 1d displacement field and its test function
     disp = Field("displacement",["u"])
+    temp = Field("temperature",["T"])
 
     # add domains to the field
   
@@ -27,6 +28,10 @@ def main():
 
     disp.set_essentials(['bc_fix'])
 
+    # Add domains to the temperature field
+    temp.add_boundary('load_point')
+    temp.set_essentials(['load_point'])
+
     # Initialize function of type Lagrangian order 2 to solve the problem.
     # The problem is still in H1 but we use H2 functions.
     # create trial function and weight function, dimensions will match the field it's added to
@@ -37,7 +42,7 @@ def main():
     path = os.path.join(os.path.dirname(__file__), "example_5p14") # since working in /tests, must use complete path as file input
 
     # Now from the model we have the essential data: elements, nodes and fields
-    model = Model(path ,[disp], [s_uw])
+    model = Model(path ,[disp, temp], [s_uw, s_uw])
 
     """
     ************************
