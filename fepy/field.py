@@ -65,7 +65,7 @@ class Field:
             if bc not in self.essentials:
                 self.essentials.append(bc)
             else:
-                raise ValueError("Can't add {0} to essentials, already added".format(bc))
+                raise Warning("Can't add {0} to essentials, already added".format(bc))
         
 def main():
     pass

@@ -49,8 +49,36 @@ class Model:
         """
         This function goes through the list of bcs and set the dof number to each node
         """
-        # First we need to know what type of elements that used.
-        print("test")
+        # First we need to know what type of elements that used and dimensions.
+        problem_dim = 0
+
+        for eltype in self.elements:
+            if len(self.elements[eltype]) > 0 and eltype != 'vertex':
+                match eltype:
+                    case 'line':
+                        problem_dim = 1
+                    case 'line3':
+                        problem_dim = 1
+                    case _:
+                        raise TypeError("Cannot determine problem dimension from element type: {0}".format(eltype))
+        
+        if problem_dim == 0:
+            raise Warning("Problem Dimension is set to 0, make sure to have appropriate elements for the problems")
+
+
+
+        # Retrieve nodes that have an essential bondary conditions, operated only on nodes
+        essential_list = []
+
+        for field in self.fields:
+            list = []
+            for essential in field.essentials:
+                 vertices = self.elements['vertex']
+
+
+
+
+       
 
     def set_fields(self,
                    fem_data: fepy.io.FemData,
