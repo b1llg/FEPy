@@ -86,30 +86,40 @@ class Model:
             # for each field, append each node_list, will match the order the fields have been passed
             essential_list.append(node_list)
 
-        # Generate an empty numer 
+        # Number of nodes
         nnodes = len(self.nodes)
 
+        # Generate numer
         self.numer = -1*np.ones((nnodes, self.dofpn))
+
         # loop over the numer table and assign a dof number to each empty dof of each node
         # each field has its own dof per node, the column in numer will depend of the field
         
         dofid = 0 # initialize a dof id to assign to each empty dof of numer
+        nkdof = 0 # number of known dofs
         
-        # For each fields
-
-        flat_essential = [item for sublist in essential_list for item in sublist]
-        """
-        ******* COntinu here
-        
-        """
-        for field in self.fields:
-            for i in range(field.dofpn):
+        # For each fields generate dofs id but skip essential dofs
+        dofcount = 0
+        for field, essential in zip(self.fields, essential_list):
+            for i in range(dofcount, dofcount + field.dofpn):
                 for j in range(self.nnodes):
-                    if self.nodes[j] not in flat_essential:
-                        self.numer[j,i] = dofid
-                        dofid +=1
+                        if j not in essential:
+                            self.numer[j,i] = dofid
+                            dofid +=1
+            dofcount += field.dofpn
 
-        print(self.numer)
+        # Now continue the numbering knowing that all essential dofs are marked
+        m,n = self.numer.shape
+
+        # Go column wise so the numbering respect the dofs generation order
+        for i in range(n):
+            for j in range(m):
+                if self.numer[j,i] == -1:
+                    nkdof += 1
+                    self.numer[j,i] = dofid
+                    dofid += 1
+
+        self.nkdof = nkdof
 
 
 
