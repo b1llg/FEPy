@@ -46,6 +46,9 @@ class Model:
         # Build the "numer" table -> Table containing the links between each node and each dof
         self.set_numer()
 
+        # "Build" the connec table, in reality it's just assigning dofs to the element
+        self.set_connec()
+
         print("test")
 
     def set_numer(self):
@@ -120,8 +123,17 @@ class Model:
                     dofid += 1
 
         self.nkdof = nkdof
+        self.ukdof = self.tdof - self.nkdof
 
-
+    def set_connec(self):
+        """
+        This function assigns the dofs to the elements
+        """
+        # Add dofs to element
+        for eltype, elements in self.elements.items():
+            for element in elements:
+                for node in element.nodes:
+                    element.add_dofs(self.numer[node])
 
        
 

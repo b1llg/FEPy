@@ -11,6 +11,7 @@ class AbstractElement(ABC):
     def __init__(self, id : int , nodes: np.ndarray):
         self.id = id
         self.nodes = self.checkNodes(nodes)
+        self.dofs = []
 
     @property
     @abstractmethod
@@ -32,6 +33,8 @@ class AbstractElement(ABC):
                 nodes.size))
         return nodes
     
+    def add_dofs(self, dofs):
+        self.dofs.append(dofs)
 
 class GeometricElement(AbstractElement):
     """
