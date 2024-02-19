@@ -41,15 +41,13 @@ class Model:
 
         self.set_fields(fem_data, field_array, space_array)
 
-        self.dofpn = int(self.tdof/self.nnodes)
+        self.dofpn = int(self.ndof/self.nnodes)
 
         # Build the "numer" table -> Table containing the links between each node and each dof
         self.set_numer()
 
         # "Build" the connec table, in reality it's just assigning dofs to the element
         self.set_connec()
-
-        print("test")
 
     def set_numer(self):
         """
@@ -114,7 +112,7 @@ class Model:
         # Now continue the numbering knowing that all essential dofs are marked
         m,n = self.numer.shape
 
-        # Go column wise so the numbering respect the dofs generation order
+        # Fill the remaining (known dofs id). Go column wise so the numbering respect the dofs generation order
         for i in range(n):
             for j in range(m):
                 if self.numer[j,i] == -1:
@@ -123,7 +121,7 @@ class Model:
                     dofid += 1
 
         self.nkdof = nkdof
-        self.ukdof = self.tdof - self.nkdof
+        self.nukdof = self.ndof - self.nkdof
 
     def set_connec(self):
         """
@@ -134,6 +132,9 @@ class Model:
             for element in elements:
                 for node in element.nodes:
                     element.add_dofs(self.numer[node])
+                
+                # Compute element ndof
+                element.ndof = len(element.dofs)
 
        
 
@@ -154,10 +155,10 @@ class Model:
 
  
         # set the total number of dofs
-        self.tdof = 0 # initialize dof per node
+        self.ndof = 0 # initialize dof per node
 
         for field in  self.fields:
-                self.tdof += field.dofpn
+                self.ndof += field.dofpn
 
-        self.tdof = len(self.nodes) * self.tdof
+        self.ndof = len(self.nodes) * self.ndof
     
