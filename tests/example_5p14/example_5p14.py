@@ -78,9 +78,21 @@ def main():
     field_loc = 0
     for eltype, elements in model.fields[field_loc].domains['volume'].elements.items():
         for element in elements:
-            aij = np.zeros(model.elements[eltype][element].dofs[field_loc])
+            dim = model.elements[eltype][element].ndof
+            aij = np.zeros((dim, dim))
+
+            #==============================================================
+            #
+            #                       Assembly loop
+            #
+            #==============================================================
+
         pass
 
 
 if __name__ == "__main__":
     main()
+
+
+
+    

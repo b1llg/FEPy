@@ -91,7 +91,7 @@ class Model:
         nnodes = len(self.nodes)
 
         # Generate numer
-        self.numer = -1*np.ones((nnodes, self.dofpn))
+        self.numer = -1*np.ones((nnodes, self.dofpn),dtype=int)
 
         # loop over the numer table and assign a dof number to each empty dof of each node
         # each field has its own dof per node, the column in numer will depend of the field
@@ -105,7 +105,7 @@ class Model:
             for i in range(dofcount, dofcount + field.dofpn):
                 for j in range(self.nnodes):
                         if j not in essential:
-                            self.numer[j,i] = dofid
+                            self.numer[j,i] = int(dofid)
                             dofid +=1
             dofcount += field.dofpn
 
