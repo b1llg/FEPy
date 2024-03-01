@@ -76,16 +76,20 @@ def main():
 
     # Volume loop - Solid mechancis
     field_loc = 0
+
+    #TODO : find a way to retrieve function space related to eqution
+
     for eltype, elements in model.fields[field_loc].domains['volume'].elements.items():
         for element in elements:
-            dim = model.elements[eltype][element].ndof
-            aij = np.zeros((dim, dim))
-
             #==============================================================
             #
             #                       Assembly loop
             #
             #==============================================================
+            dim = model.elements[eltype][element].ndof
+            aij = np.zeros((dim, dim))
+
+            aij = element
 
         pass
 
