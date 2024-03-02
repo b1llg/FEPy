@@ -35,7 +35,11 @@ class Field:
         self.boundaries = dict()
         self.essentials = []
 
-    def set_domains(self, femdata : fepy.io.FemData , space : fepy.space.Space):
+    def set_spaces(self, space_array : fepy.space.Space ):
+        for space in space_array:
+            self.space = space
+
+    def set_domains(self, femdata : fepy.io.FemData):
         """
         Assign element data to the correct comain
         """

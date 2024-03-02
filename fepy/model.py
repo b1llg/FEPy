@@ -128,7 +128,7 @@ class Model:
         This function assigns the dofs to the elements
         """
         # Add dofs to element
-        for eltype, elements in self.elements.items():
+        for _ , elements in self.elements.items():
             for element in elements:
                 for node in element.nodes:
                     element.add_dofs(self.numer[node])
@@ -146,9 +146,10 @@ class Model:
         This functions assign elements to fields and their corresponding boundary
         """
         # Set the fields
-        for field, space in zip(field_array, space_array):
+        for field in field_array:
             # Call set functions
-            field.set_domains(fem_data, space)
+            field.set_domains(fem_data)
+            field.set_spaces(space_array)
             
         self.fields = field_array # assign fields to model
         self.nfields = len(field_array)
