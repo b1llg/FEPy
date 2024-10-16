@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import time
 
 
-from fepy.mesh.parser import msh_parse
+from fepy.mesh.parser import msh_parser
 from fepy.quadrature import gauss_quad
 from fepy.interp import shape_dshape
 
@@ -14,7 +14,7 @@ from fepy.interp import shape_dshape
 
 def main():
 
-    msh_parse("example_5p14.msh")
+    msh_parser("example_5p14.msh")
 
     ####
     #
