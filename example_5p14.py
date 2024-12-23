@@ -14,7 +14,7 @@ from fepy.interp import shape_dshape
 
 def main():
 
-    msh_parser("example_5p14.msh")
+    # msh_parser("example_5p14.msh")
 
     ####
     #
