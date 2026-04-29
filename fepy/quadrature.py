@@ -7,6 +7,7 @@ def gauss_quad(mgk):
     This function returns ksi and w for 'mgk' gauss point
     """
     match mgk:
+
         case 1:
             ksi = np.array([0])
             w = np.array([2])
